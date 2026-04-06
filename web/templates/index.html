@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mesa de Ayuda - Clasificador</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎫 Portal de Soporte</h1>
+        <p>Ingresa tu solicitud y la clasificaremos automáticamente.</p>
+        
+        <div class="form-group">
+            <label>Asunto:</label>
+            <input type="text" id="subject" placeholder="Ej: Problema con mi factura">
+        </div>
+        
+        <div class="form-group">
+            <label>Descripción:</label>
+            <textarea id="descripcion" rows="4" 
+                placeholder="Describe tu problema con detalle..."></textarea>
+        </div>
+        
+        <button onclick="clasificar()">Enviar Ticket</button>
+        
+        <div id="resultado" style="display:none;">
+            <h2>Resultado</h2>
+            <p><strong>ID de Ticket:</strong> <span id="ticket-id"></span></p>
+            <p><strong>Categoría:</strong> <span id="categoria"></span></p>
+        </div>
+    </div>
+    
+    <script>
+        async function clasificar() {
+            const subject = document.getElementById('subject').value;
+            const descripcion = document.getElementById('descripcion').value;
+            
+            if (!descripcion) {
+                alert('Por favor ingresa una descripción');
+                return;
+            }
+            
+            const respuesta = await fetch('/clasificar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subject, descripcion })
+            });
+            
+            const datos = await respuesta.json();
+            
+            document.getElementById('ticket-id').textContent = datos.ticket_id;
+            document.getElementById('categoria').textContent = datos.categoria;
+            document.getElementById('resultado').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+
