@@ -1,27 +1,40 @@
 import pandas as pd
 import pickle
+import random
 from naive_bayes import NaiveBayesManual
 
 # Cargar dataset
-df = pd.read_csv('data/customer_support_tickets.csv')
+df = pd.read_csv('data/Dataset.csv')
+df = df.dropna(subset=['instruction', 'category'])
 
-COLUMNA_TEXTO = 'Ticket Description'   
-COLUMNA_ETIQUETA = 'Ticket Type'       
+# Mezclar los datos aleatoriamente antes de dividir
+df = df.sample(frac=1, random_state=42).reset_index(drop=True)
 
-# Eliminar filas con valores nulos
-df = df.dropna(subset=['Ticket Description', 'Ticket Type'])
+# División 80% entrenamiento / 20% test final
+corte = int(len(df) * 0.80)
+df_entrenamiento = df[:corte]
+df_test          = df[corte:]
 
-textos = df[COLUMNA_TEXTO].tolist()
-etiquetas = df[COLUMNA_ETIQUETA].tolist()
+print(f"Total de tickets:      {len(df)}")
+print(f"Tickets entrenamiento: {len(df_entrenamiento)}")
+print(f"Tickets test final:    {len(df_test)}")
 
-# Entrenar el modelo
+# Guardar el set de test para usarlo después en evaluar.py
+df_test.to_csv('data/test_set.csv', index=False)
+df_entrenamiento.to_csv('data/train_set.csv', index=False)
+print("Sets guardados en data/train_set.csv y data/test_set.csv")
+
+# Entrenar el modelo con el 80%
+textos    = df_entrenamiento['instruction'].tolist()
+etiquetas = df_entrenamiento['category'].tolist()
+
 modelo = NaiveBayesManual()
 modelo.entrenar(textos, etiquetas)
 
-print("Modelo entrenado con", len(textos), "tickets")
+print("\nModelo entrenado con", len(textos), "tickets")
 print("Categorías:", modelo.clases)
 
-# Guardar el modelo en un archivo
+# Guardar el modelo
 with open('modelo/modelo_entrenado.pkl', 'wb') as f:
     pickle.dump(modelo, f)
 

@@ -25,8 +25,9 @@ def preprocesar_texto(texto):
     
     return palabras  # retorna una lista de palabras limpias
 
-# Prueba rápida
-if __name__ == '__main__':
-    ejemplo = "My internet connection is not working properly!!!"
-    print(preprocesar_texto(ejemplo))
-    # Resultado esperado: ['internet', 'connection', 'work', 'proper']
+
+# Prueba rápida 
+# if __name__ == '__main__':--
+#    ejemplo = "My internet connection is not working properly!!!"
+#    print(preprocesar_texto(ejemplo))
+     # Resultado esperado: ['internet', 'connection', 'work', 'proper']

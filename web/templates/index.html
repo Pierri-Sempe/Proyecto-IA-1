@@ -1,58 +1,510 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Mesa de Ayuda - Clasificador</title>
-    <link rel="stylesheet" href="/static/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mesa de Ayuda — Portal de Soporte</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #F4F1EC;
+      --surface:   #FFFFFF;
+      --ink:       #1C1C1C;
+      --ink-soft:  #6B6660;
+      --accent:    #2D6A4F;
+      --accent-lt: #52B788;
+      --accent-bg: #D8F3DC;
+      --warn:      #E76F51;
+      --border:    #DDD8D0;
+      --shadow:    0 2px 16px rgba(0,0,0,0.07);
+      --radius:    14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ─────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-mark svg { width: 20px; height: 20px; fill: white; }
+
+    .brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .brand span { color: var(--accent); }
+
+    .header-right {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      background: var(--accent-bg);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* ── HERO ────────────────────────────────── */
+    .hero {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 40px 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero p {
+      margin-top: 12px;
+      font-size: 1rem;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      max-width: 480px;
+      font-weight: 300;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 160px;
+    }
+
+    .stat-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      text-align: center;
+    }
+    .stat-chip .num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-chip .lbl {
+      font-size: 0.72rem;
+      color: var(--ink-soft);
+      margin-top: 3px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── MAIN LAYOUT ─────────────────────────── */
+    main {
+      flex: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 40px 40px 60px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ── FORM CARD ───────────────────────────── */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-card h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .form-card .subtitle {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      margin-bottom: 28px;
+      font-weight: 300;
+    }
+
+    .field { margin-bottom: 20px; }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 7px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: none;
+    }
+    input[type="text"]:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.12);
+      background: white;
+    }
+    textarea { height: 130px; line-height: 1.6; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 15px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .btn-submit:hover { background: #245A42; }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit svg { width: 18px; height: 18px; fill: white; }
+
+    /* Loading state */
+    .btn-submit.loading { opacity: 0.7; pointer-events: none; }
+
+    /* ── RESULT AREA ─────────────────────────── */
+    #resultado {
+      margin-top: 24px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      background: var(--accent);
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .result-header svg { width: 18px; height: 18px; fill: white; flex-shrink: 0; }
+    .result-header span { font-weight: 600; font-size: 0.95rem; }
+
+    .result-body { padding: 20px; background: white; }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--bg);
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-row .key {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+    }
+    .result-row .val {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+
+    .category-badge {
+      background: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid var(--accent-lt);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── SIDEBAR ─────────────────────────────── */
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .info-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    /* Category list */
+    .cat-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .cat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--ink);
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+    .cat-item:hover { background: var(--bg); }
+    .cat-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .cat-item .cat-name { font-weight: 500; flex: 1; }
+    .cat-item .cat-desc { color: var(--ink-soft); font-size: 0.78rem; }
+
+    /* Tip card */
+    .tip-card {
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-lt);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .tip-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 0.95rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .tip-card p {
+      font-size: 0.82rem;
+      color: #2D6A4F;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* ── FOOTER ──────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 720px) {
+      header { padding: 14px 20px; }
+      .hero { grid-template-columns: 1fr; padding: 36px 20px 28px; }
+      .hero-stats { flex-direction: row; }
+      main { grid-template-columns: 1fr; padding: 24px 20px 40px; }
+      .form-card { padding: 24px; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎫 Portal de Soporte</h1>
-        <p>Ingresa tu solicitud y la clasificaremos automáticamente.</p>
-        
-        <div class="form-group">
-            <label>Asunto:</label>
-            <input type="text" id="subject" placeholder="Ej: Problema con mi factura">
-        </div>
-        
-        <div class="form-group">
-            <label>Descripción:</label>
-            <textarea id="descripcion" rows="4" 
-                placeholder="Describe tu problema con detalle..."></textarea>
-        </div>
-        
-        <button onclick="clasificar()">Enviar Ticket</button>
-        
-        <div id="resultado" style="display:none;">
-            <h2>Resultado</h2>
-            <p><strong>ID de Ticket:</strong> <span id="ticket-id"></span></p>
-            <p><strong>Categoría:</strong> <span id="categoria"></span></p>
-        </div>
+
+<!-- ── HEADER ──────────────────────────────── -->
+<header>
+  <div class="logo-mark">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2zm-2 10H6V10h12v2zm0-3H6V7h12v2z"/></svg>
+  </div>
+  <div class="brand">Mesa de <span>Ayuda</span></div>
+  <div class="header-right">Clasificación automática con IA</div>
+</header>
+
+<!-- ── HERO ────────────────────────────────── -->
+<div style="background:var(--surface); border-bottom:1px solid var(--border);">
+  <div class="hero" style="grid-template-columns:1fr;">
+    <div>
+      <h1>Tu solicitud,<br/><em>clasificada al instante.</em></h1>
+      <p>Describe tu problema y nuestro sistema de inteligencia artificial lo dirigirá automáticamente al área correspondiente.</p>
     </div>
-    
-    <script>
-        async function clasificar() {
-            const subject = document.getElementById('subject').value;
-            const descripcion = document.getElementById('descripcion').value;
-            
-            if (!descripcion) {
-                alert('Por favor ingresa una descripción');
-                return;
-            }
-            
-            const respuesta = await fetch('/clasificar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ subject, descripcion })
-            });
-            
-            const datos = await respuesta.json();
-            
-            document.getElementById('ticket-id').textContent = datos.ticket_id;
-            document.getElementById('categoria').textContent = datos.categoria;
-            document.getElementById('resultado').style.display = 'block';
-        }
-    </script>
+  </div>
+</div>
+
+<!-- ── MAIN ─────────────────────────────────── -->
+<main>
+
+  <!-- Formulario -->
+  <div class="form-card">
+    <h2>Enviar nuevo ticket</h2>
+    <p class="subtitle">Completa los campos a continuación. Mientras más detalle, mejor clasificación.</p>
+
+    <div class="field">
+      <label>Asunto</label>
+      <input type="text" id="subject" placeholder="Ej: No puedo acceder a mi cuenta" />
+    </div>
+
+    <div class="field">
+      <label>Descripción</label>
+      <textarea id="descripcion" placeholder="Describe tu problema con el mayor detalle posible..."></textarea>
+    </div>
+
+    <button class="btn-submit" onclick="clasificar()">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+      Enviar Ticket
+    </button>
+
+    <!-- Resultado -->
+    <div id="resultado">
+      <div class="result-header">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        <span>Ticket procesado correctamente</span>
+      </div>
+      <div class="result-body">
+        <div class="result-row">
+          <span class="key">ID de Ticket</span>
+          <span class="val" id="ticket-id">—</span>
+        </div>
+        <div class="result-row">
+          <span class="key">Categoría detectada</span>
+          <span class="category-badge" id="categoria">—</span>
+        </div>
+        <div class="result-row">
+          <span class="key">Estado</span>
+          <span class="val" style="color:var(--accent)">Enrutado ✓</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+
+    <div class="tip-card">
+      <h3>¿Cómo funciona?</h3>
+      <p>El sistema analiza las palabras de tu solicitud usando el algoritmo <strong>Naïve Bayes</strong>, entrenado con más de 26,000 tickets reales, y determina automáticamente a qué área pertenece.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>Categorías disponibles</h3>
+      <ul class="cat-list">
+        <li class="cat-item"><div class="cat-dot" style="background:#2D6A4F"></div><span class="cat-name">ACCOUNT</span><span class="cat-desc">Cuentas y acceso</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#52B788"></div><span class="cat-name">ORDER</span><span class="cat-desc">Gestión de pedidos</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#E76F51"></div><span class="cat-name">REFUND</span><span class="cat-desc">Devoluciones</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#F4A261"></div><span class="cat-name">PAYMENT</span><span class="cat-desc">Pagos y cobros</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#457B9D"></div><span class="cat-name">DELIVERY</span><span class="cat-desc">Entregas</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#1D3557"></div><span class="cat-name">SHIPPING</span><span class="cat-desc">Dirección de envío</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#A8DADC"></div><span class="cat-name">INVOICE</span><span class="cat-desc">Facturas</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#6D6875"></div><span class="cat-name">CONTACT</span><span class="cat-desc">Contacto y soporte</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#B5838D"></div><span class="cat-name">FEEDBACK</span><span class="cat-desc">Opiniones y quejas</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#E9C46A"></div><span class="cat-name">CANCEL</span><span class="cat-desc">Cancelaciones</span></li>
+        <li class="cat-item"><div class="cat-dot" style="background:#264653"></div><span class="cat-name">SUBSCRIPTION</span><span class="cat-desc">Suscripciones</span></li>
+      </ul>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  Mesa de Ayuda — Clasificación automática con Naïve Bayes &nbsp;·&nbsp; Universidad Rafael Landívar &nbsp;·&nbsp; IA 2026
+</footer>
+
+<script>
+  async function clasificar() {
+    const subject     = document.getElementById('subject').value.trim();
+    const descripcion = document.getElementById('descripcion').value.trim();
+    const btn         = document.querySelector('.btn-submit');
+    const resultado   = document.getElementById('resultado');
+
+    if (!descripcion) {
+      alert('Por favor ingresa una descripción del problema.');
+      return;
+    }
+
+    // Estado de carga
+    btn.classList.add('loading');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M12 4V2A10 10 0 002 12h2a8 8 0 018-8z"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg> Clasificando...`;
+    resultado.style.display = 'none';
+
+    try {
+      const respuesta = await fetch('/clasificar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, descripcion })
+      });
+
+      const datos = await respuesta.json();
+
+      document.getElementById('ticket-id').textContent  = '#' + datos.ticket_id;
+      document.getElementById('categoria').textContent  = datos.categoria;
+      resultado.style.display = 'block';
+
+    } catch (err) {
+      alert('Ocurrió un error al clasificar el ticket. Asegúrate de que el servidor está activo.');
+    } finally {
+      btn.classList.remove('loading');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="white" width="18" height="18"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg> Enviar Ticket`;
+    }
+  }
+
+  // Permitir enviar con Enter en el campo asunto
+  document.getElementById('subject').addEventListener('keydown', e => {
+    if (e.key === 'Enter') clasificar();
+  });
+</script>
+
 </body>
 </html>
-
